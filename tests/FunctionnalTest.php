@@ -18,9 +18,23 @@ class FunctionnalTest extends TestCase
     /**
      *
      */
+    public static function setUpBeforeClass()
+    {
+        umask(0);
+    }
+
+    /**
+     *
+     */
     public function setUp()
     {
-        $this->clamd = new Clamd('127.0.0.1:3310');
+        if (isset($_SERVER['CLAM_TCP_ADDRESS']) && !empty($_SERVER['CLAM_TCP_ADDRESS'])) {
+            $tcp = $_SERVER['CLAM_TCP_ADDRESS'];
+        } else {
+            $tcp = 'tcp://127.0.0.1:3310';
+        }
+
+        $this->clamd = new Clamd($tcp);
     }
 
     /**
@@ -36,7 +50,15 @@ class FunctionnalTest extends TestCase
      */
     public function test_pipe()
     {
-        $clamd = new Clamd('unix:///var/run/clamd.scan/clamd.sock');
+        if (isset($_SERVER['CLAM_UNIX_ADDRESS']) && !empty($_SERVER['CLAM_UNIX_ADDRESS'])) {
+            $socket = $_SERVER['CLAM_UNIX_ADDRESS'];
+        } elseif (file_exists('/var/run/clamd.scan/clamd.sock')) {
+            $socket = 'unix:///var/run/clamd.scan/clamd.sock';
+        } else {
+            $socket = 'unix:///var/run/clamav/clamd.ctl';
+        }
+
+        $clamd = new Clamd($socket);
 
         $this->assertSame(true, $clamd->ping());
     }
