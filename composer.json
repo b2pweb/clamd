@@ -22,7 +22,8 @@
     "phpunit/phpunit": "~5.7|~6.0"
   },
   "scripts": {
-    "tests": "phpunit"
+    "tests": "phpunit --exclude-group bdf",
+    "all-tests": "phpunit"
   },
   "extra": {
     "branch-alias": {
