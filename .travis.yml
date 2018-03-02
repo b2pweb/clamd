@@ -24,5 +24,8 @@ before_install:
 install:
   - travis_retry composer install
 
+before_script:
+  sudo chmod +x $TRAVIS_BUILD_DIR/tests/Fixtures
+
 script:
   - composer tests

@@ -99,7 +99,7 @@ class FunctionnalTest extends TestCase
      */
     public function test_scan_virus()
     {
-        $result = $this->clamd->scanFile(__DIR__.'/_file/file_infected.pdf');
+        $result = $this->clamd->scanFile(__DIR__.'/Fixtures/file_infected.pdf');
 
         $this->assertFalse($result);
         $this->assertSame('Clamav.Test.File-6', $this->clamd->getLastReason());
@@ -110,7 +110,7 @@ class FunctionnalTest extends TestCase
      */
     public function test_scan_ok()
     {
-        $result = $this->clamd->scanFile(__DIR__.'/_file/image.jpg');
+        $result = $this->clamd->scanFile(__DIR__.'/Fixtures/image.jpg');
 
         $this->assertTrue($result);
         $this->assertNull($this->clamd->getLastReason());
@@ -121,7 +121,7 @@ class FunctionnalTest extends TestCase
      */
     public function test_legacy_scan()
     {
-        $result = $this->clamd->fileScan(__DIR__.'/_file/image.jpg');
+        $result = $this->clamd->fileScan(__DIR__.'/Fixtures/image.jpg');
 
         $this->assertSame(Clamd::NO_VIRUS, $result['stats']);
     }
