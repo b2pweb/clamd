@@ -10,10 +10,16 @@ use PHPUnit\Framework\TestCase;
  */
 class FunctionnalTest extends TestCase
 {
+    const EICAR = 'X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*';
+
     /**
      * @var Clamd
      */
     private $clamd;
+    /**
+     * @var array
+     */
+    private $files;
 
     /**
      *
@@ -35,6 +41,18 @@ class FunctionnalTest extends TestCase
         }
 
         $this->clamd = new Clamd($tcp);
+
+        $this->files['ok'] = $this->createFile('OK');
+        $this->files['virus'] = $this->createFile(self::EICAR);
+    }
+
+    /**
+     *
+     */
+    public function tearDown()
+    {
+        unlink($this->files['ok']);
+        unlink($this->files['virus']);
     }
 
     /**
@@ -99,10 +117,10 @@ class FunctionnalTest extends TestCase
      */
     public function test_scan_virus()
     {
-        $result = $this->clamd->scanFile(__DIR__.'/Fixtures/file_infected.pdf');
+        $result = $this->clamd->scanFile($this->files['virus']);
 
         $this->assertFalse($result);
-        $this->assertSame('Clamav.Test.File-6', $this->clamd->getLastReason());
+        $this->assertSame('Eicar-Test-Signature', $this->clamd->getLastReason());
     }
 
     /**
@@ -110,7 +128,7 @@ class FunctionnalTest extends TestCase
      */
     public function test_scan_ok()
     {
-        $result = $this->clamd->scanFile(__DIR__.'/Fixtures/image.jpg');
+        $result = $this->clamd->scanFile($this->files['ok']);
 
         $this->assertTrue($result);
         $this->assertNull($this->clamd->getLastReason());
@@ -121,8 +139,24 @@ class FunctionnalTest extends TestCase
      */
     public function test_legacy_scan()
     {
-        $result = $this->clamd->fileScan(__DIR__.'/Fixtures/image.jpg');
+        $result = $this->clamd->fileScan($this->files['ok']);
 
         $this->assertSame(Clamd::NO_VIRUS, $result['stats']);
+    }
+
+    /**
+     * Create test file
+     *
+     * @param string $content
+     *
+     * @return string
+     */
+    private function createFile($content)
+    {
+        $name = tempnam(sys_get_temp_dir(), '');
+        file_put_contents($name, $content);
+        chmod($name, 0777);
+
+        return $name;
     }
 }
