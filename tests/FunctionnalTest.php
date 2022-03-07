@@ -24,7 +24,7 @@ class FunctionnalTest extends TestCase
     /**
      *
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         umask(0);
     }
@@ -32,7 +32,7 @@ class FunctionnalTest extends TestCase
     /**
      *
      */
-    public function setUp()
+    public function setUp(): void
     {
         if (isset($_SERVER['CLAM_TCP_ADDRESS']) && !empty($_SERVER['CLAM_TCP_ADDRESS'])) {
             $tcp = $_SERVER['CLAM_TCP_ADDRESS'];
@@ -49,7 +49,7 @@ class FunctionnalTest extends TestCase
     /**
      *
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unlink($this->files['ok']);
         unlink($this->files['virus']);
@@ -86,7 +86,7 @@ class FunctionnalTest extends TestCase
      */
     public function test_version()
     {
-        $this->assertContains('ClamAV', $this->clamd->version());
+        $this->assertStringContainsString('ClamAV', $this->clamd->version());
     }
 
     /**
@@ -99,7 +99,7 @@ class FunctionnalTest extends TestCase
         $this->clamd->version();
         $this->clamd->version();
 
-        $this->assertContains('ClamAV', $this->clamd->version());
+        $this->assertStringContainsString('ClamAV', $this->clamd->version());
     }
 
     /**
@@ -120,7 +120,7 @@ class FunctionnalTest extends TestCase
         $result = $this->clamd->scanFile($this->files['virus']);
 
         $this->assertFalse($result);
-        $this->assertContains($this->clamd->getLastReason(), ['Eicar-Test-Signature', 'Win.Test.EICAR_HDB-1']);
+        $this->assertContains($this->clamd->getLastReason(), ['Eicar-Test-Signature', 'Win.Test.EICAR_HDB-1', 'Eicar-Signature']);
     }
 
     /**
