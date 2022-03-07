@@ -29,5 +29,9 @@
     "branch-alias": {
       "dev-master": "1.0-dev"
     }
+  },
+  "scripts": {
+    "tests": "phpunit",
+    "tests-with-coverage": "phpunit --coverage-clover coverage.xml"
   }
 }

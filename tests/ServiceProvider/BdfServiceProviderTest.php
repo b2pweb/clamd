@@ -29,6 +29,10 @@ class BdfServiceProviderTest extends TestCase
      */
     public function setUp()
     {
+        if (!class_exists(Application::class)) {
+            $this->markTestSkipped('b2p/bdf-web not installed');
+        }
+
         $this->container = new Application([
             'config' => new Config([
                 'clamd' => [
