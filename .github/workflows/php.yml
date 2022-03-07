@@ -30,10 +30,10 @@ jobs:
         && sudo chown clamav:clamav /var/run/clamav
 
     - name: Refresh ClamAV
-      run: sudo  sudo systemctl stop clamav-freshclam.service && sudo freshclam
+      run: sudo systemctl stop clamav-freshclam.service && sudo freshclam
 
     - name: ClamAV Status
-      run: sudo systemctl restart clamav-daemon && sudo systemctl status clamav-daemon
+      run: sudo systemctl restart clamav-daemon && sleep 30 && sudo systemctl status clamav-daemon
 
     - name: Install PHP
       uses: shivammathur/setup-php@v2
