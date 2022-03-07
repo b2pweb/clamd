@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php-versions: ['7.2', '7.3', '7.4']
+        php-versions: ['7.1', '7.2', '7.3', '7.4']
     name: PHP ${{ matrix.php-versions }}
 
     steps:
@@ -24,6 +24,9 @@ jobs:
 
     - name: Install ClamAV
       run: sudo apt-get install -y clamav clamav-daemon && sudo systemctl start clamav-daemon
+
+    - name: ClamAV Status
+      run: sudo systemctl status clamav-daemon
 
     - name: Install PHP
       uses: shivammathur/setup-php@v2
