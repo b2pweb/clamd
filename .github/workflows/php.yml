@@ -33,7 +33,7 @@ jobs:
       run: sudo  sudo systemctl stop clamav-freshclam.service && sudo freshclam
 
     - name: ClamAV Status
-      run: sudo systemctl start clamav-daemon && sudo systemctl status clamav-daemon
+      run: sudo systemctl restart clamav-daemon && sudo systemctl status clamav-daemon
 
     - name: Install PHP
       uses: shivammathur/setup-php@v2
