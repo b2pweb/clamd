@@ -120,7 +120,7 @@ class FunctionnalTest extends TestCase
         $result = $this->clamd->scanFile($this->files['virus']);
 
         $this->assertFalse($result);
-        $this->assertSame('Eicar-Test-Signature', $this->clamd->getLastReason());
+        $this->assertContains($this->clamd->getLastReason(), ['Eicar-Test-Signature', 'Win.Test.EICAR_HDB-1']);
     }
 
     /**
