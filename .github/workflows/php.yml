@@ -23,7 +23,11 @@ jobs:
         timezoneLinux: "Europe/Paris"
 
     - name: Install ClamAV
-      run: sudo apt-get install -y clamav clamav-daemon && sudo echo TCPSocket 3310 >> /etc/clamav/clamd.conf
+      run: |
+        sudo apt-get install -y clamav clamav-daemon 
+        && su -c 'echo TCPSocket 3310 >> /etc/clamav/clamd.conf'
+        && sudo mkdir /var/run/clamav
+        && sudo chown clamav:clamav /var/run/clamav
 
     - name: Refresh ClamAV
       run: sudo  sudo systemctl stop clamav-freshclam.service && sudo freshclam
