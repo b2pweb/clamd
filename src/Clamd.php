@@ -5,6 +5,7 @@ namespace Clamd;
 use Socket\Raw\Factory as SocketFactory;
 use Xenolope\Quahog\Client;
 use Xenolope\Quahog\Exception\ConnectionException;
+use Xenolope\Quahog\Result;
 
 /**
  * Clamd
@@ -184,6 +185,24 @@ class Clamd implements ClamdInterface
     {
         $result = $this->client()->scanFile($file);
 
+        if ($result instanceof Result) {
+            $legacyResult = [
+                'filename' => $result->getFilename(),
+                'reason' => $result->getReason(),
+                'id' => $result->getReason(),
+            ];
+
+            if ($result->isOk()) {
+                $legacyResult['status'] = 'OK';
+            } elseif ($result->isFound()) {
+                $legacyResult['status'] = 'FOUND';
+            } else {
+                $legacyResult['status'] = 'ERROR';
+            }
+
+            $result = $legacyResult;
+        }
+
         $result['file'] = $result['filename'];
         $result['stats'] = $result['status'];
 
@@ -195,12 +214,18 @@ class Clamd implements ClamdInterface
     /**
      * Check if the scan is ok
      *
-     * @param array $scanResult
+     * @param array|Result $scanResult
      *
      * @return boolean
      */
     private function isFileOk($scanResult)
     {
+        if ($scanResult instanceof Result) {
+            $this->lastReason = $scanResult->getReason();
+
+            return $scanResult->isOk();
+        }
+
         $this->lastReason = $scanResult['reason'];
 
         return $scanResult['status'] === self::NO_VIRUS;
