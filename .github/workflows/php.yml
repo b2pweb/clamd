@@ -11,8 +11,28 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php-versions: ['7.1', '7.2', '7.3', '7.4', '8.0', '8.1']
+        php-versions: ['7.2', '7.3', '7.4', '8.0', '8.1', '8.2', '8.3', '8.4', '8.5']
+      fail-fast: false
     name: PHP ${{ matrix.php-versions }}
+
+    services:
+      clamav:
+        image: clamav/clamav:stable
+        ports:
+          - 3310:3310
+        # Share /tmp so that clamd can read files scanned by path (SCAN command)
+        # and expose its unix socket (/tmp/clamd.sock) to the runner
+        volumes:
+          - /tmp:/tmp
+        options: >-
+          --health-cmd clamdcheck.sh
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 30
+
+    env:
+      CLAM_TCP_ADDRESS: tcp://127.0.0.1:3310
+      CLAM_UNIX_ADDRESS: unix:///tmp/clamd.sock
 
     steps:
     - uses: actions/checkout@v2
@@ -22,18 +42,10 @@ jobs:
       with:
         timezoneLinux: "Europe/Paris"
 
-    - name: Install ClamAV
-      run: >
-        sudo apt-get install -y clamav clamav-daemon 
-        && sudo su -c 'echo TCPSocket 3310 >> /etc/clamav/clamd.conf'
-        && sudo mkdir /var/run/clamav
-        && sudo chown clamav:clamav /var/run/clamav
-
-    - name: Refresh ClamAV
-      run: sudo systemctl stop clamav-freshclam.service && sudo freshclam
-
-    - name: ClamAV Status
-      run: sudo systemctl restart clamav-daemon && sleep 30 && sudo systemctl status clamav-daemon
+    - uses: iFaxity/wait-on-action@v1.2.1
+      with:
+        resource: tcp:127.0.0.1:3310
+        timeout: 300000
 
     - name: Install PHP
       uses: shivammathur/setup-php@v2
@@ -52,3 +64,7 @@ jobs:
 
     - name: Run test suite
       run: composer run-script tests
+
+    - name: ClamAV logs
+      if: failure()
+      run: docker logs ${{ job.services.clamav.id }}

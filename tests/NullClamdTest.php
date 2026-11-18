@@ -54,12 +54,7 @@ class NullClamdTest extends TestCase
     {
         $clamd = new NullClamd();
 
-        $result = [
-            'id' => '1',
-            'filename' => 'foo',
-            'reason' => null,
-            'status' => 'OK',
-        ];
+        $result = true;
 
         $this->assertSame($result, $clamd->scanFile('foo'));
         $this->assertSame($result, $clamd->multiscanFile('foo'));
@@ -74,12 +69,7 @@ class NullClamdTest extends TestCase
     {
         $clamd = new NullClamd();
 
-        $result = [
-            'id' => '1',
-            'filename' => null,
-            'reason' => null,
-            'status' => 'OK',
-        ];
+        $result = true;
 
         $this->assertSame($result, $clamd->scanResourceStream('stream'));
         $this->assertSame($result, $clamd->scanStream('stream'));
