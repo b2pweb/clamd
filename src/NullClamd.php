@@ -12,7 +12,7 @@ class NullClamd implements ClamdInterface
     /**
      * {@inheritdoc}
      */
-    public function ping()
+    public function ping(): bool
     {
         return true;
     }
@@ -20,7 +20,7 @@ class NullClamd implements ClamdInterface
     /**
      * {@inheritdoc}
      */
-    public function version()
+    public function version(): ?string
     {
         return null;
     }
@@ -28,7 +28,7 @@ class NullClamd implements ClamdInterface
     /**
      * {@inheritdoc}
      */
-    public function stats()
+    public function stats(): array
     {
         return [];
     }
@@ -36,7 +36,7 @@ class NullClamd implements ClamdInterface
     /**
      * {@inheritdoc}
      */
-    public function reload()
+    public function reload(): bool
     {
         return true;
     }
@@ -44,7 +44,7 @@ class NullClamd implements ClamdInterface
     /**
      * {@inheritdoc}
      */
-    public function shutdown()
+    public function shutdown(): bool
     {
         return true;
     }
@@ -52,7 +52,7 @@ class NullClamd implements ClamdInterface
     /**
      * {@inheritdoc}
      */
-    public function disconnect()
+    public function disconnect(): bool
     {
         return true;
     }
@@ -60,9 +60,9 @@ class NullClamd implements ClamdInterface
     /**
      * {@inheritdoc}
      */
-    public function scanFile($file)
+    public function scanFile($file): bool
     {
-        return $this->createDummyScanResponse($file);
+        return true;
     }
 
     /**
@@ -74,7 +74,7 @@ class NullClamd implements ClamdInterface
      *
      * @return array
      */
-    public function fileScan($file)
+    public function fileScan($file): array
     {
         $result = $this->createDummyScanResponse($file);
 
@@ -87,47 +87,47 @@ class NullClamd implements ClamdInterface
     /**
      * {@inheritdoc}
      */
-    public function multiscanFile($file)
+    public function multiscanFile($file): bool
     {
-        return $this->createDummyScanResponse($file);
+        return true;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function contScan($file)
+    public function contScan($file): bool
     {
-        return $this->createDummyScanResponse($file);
+        return true;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function scanLocalFile($file, $maxChunkSize = 1024)
+    public function scanLocalFile($file, $maxChunkSize = 1024): bool
     {
-        return $this->createDummyScanResponse($file);
+        return true;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function scanResourceStream($stream, $maxChunkSize = 1024)
+    public function scanResourceStream($stream, $maxChunkSize = 1024): bool
     {
-        return $this->createDummyScanResponse(null);
+        return true;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function scanStream($stream, $maxChunkSize = 1024)
+    public function scanStream($stream, $maxChunkSize = 1024): bool
     {
-        return $this->createDummyScanResponse(null);
+        return true;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getLastReason()
+    public function getLastReason(): ?string
     {
         return null;
     }
@@ -135,7 +135,7 @@ class NullClamd implements ClamdInterface
     /**
      * {@inheritdoc}
      */
-    public function startSession()
+    public function startSession(): void
     {
 
     }
@@ -143,7 +143,7 @@ class NullClamd implements ClamdInterface
     /**
      * {@inheritdoc}
      */
-    public function endSession()
+    public function endSession(): void
     {
 
     }
@@ -155,7 +155,7 @@ class NullClamd implements ClamdInterface
      *
      * @return array
      */
-    private function createDummyScanResponse($filename)
+    private function createDummyScanResponse($filename): array
     {
         return [
             'id' => '1',

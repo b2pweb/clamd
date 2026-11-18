@@ -57,7 +57,7 @@ class Clamd implements ClamdInterface
     /**
      * {@inheritdoc}
      */
-    public function ping()
+    public function ping(): bool
     {
         try {
             return $this->client()->ping();
@@ -69,7 +69,7 @@ class Clamd implements ClamdInterface
     /**
      * {@inheritdoc}
      */
-    public function version()
+    public function version(): ?string
     {
         return $this->client()->version();
     }
@@ -77,7 +77,7 @@ class Clamd implements ClamdInterface
     /**
      * {@inheritdoc}
      */
-    public function stats()
+    public function stats(): array
     {
         $stats = [];
 
@@ -97,7 +97,7 @@ class Clamd implements ClamdInterface
     /**
      * {@inheritdoc}
      */
-    public function reload()
+    public function reload(): bool
     {
         return $this->client()->reload() === 'RELOADING';
     }
@@ -105,7 +105,7 @@ class Clamd implements ClamdInterface
     /**
      * {@inheritdoc}
      */
-    public function shutdown()
+    public function shutdown(): bool
     {
         return $this->client()->shutdown() === '';
     }
@@ -113,7 +113,7 @@ class Clamd implements ClamdInterface
     /**
      * {@inheritdoc}
      */
-    public function scanFile($file)
+    public function scanFile($file): bool
     {
         return $this->isFileOk(
             $this->client()->scanFile($file)
@@ -123,7 +123,7 @@ class Clamd implements ClamdInterface
     /**
      * {@inheritdoc}
      */
-    public function multiscanFile($file)
+    public function multiscanFile($file): bool
     {
         return $this->isFileOk(
             $this->client()->multiscanFile($file)
@@ -133,7 +133,7 @@ class Clamd implements ClamdInterface
     /**
      * {@inheritdoc}
      */
-    public function contScan($file)
+    public function contScan($file): bool
     {
         return $this->isFileOk(
             $this->client()->contScan($file)
@@ -143,7 +143,7 @@ class Clamd implements ClamdInterface
     /**
      * {@inheritdoc}
      */
-    public function scanLocalFile($file, $maxChunkSize = 1024)
+    public function scanLocalFile($file, $maxChunkSize = 1024): bool
     {
         return $this->isFileOk(
             $this->client()->scanLocalFile($file, $maxChunkSize)
@@ -153,7 +153,7 @@ class Clamd implements ClamdInterface
     /**
      * {@inheritdoc}
      */
-    public function scanResourceStream($stream, $maxChunkSize = 1024)
+    public function scanResourceStream($stream, $maxChunkSize = 1024): bool
     {
         return $this->isFileOk(
             $this->client()->scanResourceStream($stream, $maxChunkSize)
@@ -163,7 +163,7 @@ class Clamd implements ClamdInterface
     /**
      * {@inheritdoc}
      */
-    public function scanStream($stream, $maxChunkSize = 1024)
+    public function scanStream($stream, $maxChunkSize = 1024): bool
     {
         return $this->isFileOk(
             $this->client()->scanStream($stream, $maxChunkSize)
@@ -179,9 +179,9 @@ class Clamd implements ClamdInterface
      *
      * @param string $file
      *
-     * @return array
+     * @return array{status:string, file: string, stats: string, ...<string, mixed>}
      */
-    public function fileScan($file)
+    public function fileScan($file): array
     {
         $result = $this->client()->scanFile($file);
 
@@ -218,7 +218,7 @@ class Clamd implements ClamdInterface
      *
      * @return boolean
      */
-    private function isFileOk($scanResult)
+    private function isFileOk($scanResult): bool
     {
         if ($scanResult instanceof Result) {
             $this->lastReason = $scanResult->getReason();
@@ -234,7 +234,7 @@ class Clamd implements ClamdInterface
     /**
      * {@inheritdoc}
      */
-    public function getLastReason()
+    public function getLastReason(): ?string
     {
         return $this->lastReason;
     }
@@ -242,7 +242,7 @@ class Clamd implements ClamdInterface
     /**
      * {@inheritdoc}
      */
-    public function startSession()
+    public function startSession(): void
     {
         $this->client = $this->client();
     }
@@ -250,7 +250,7 @@ class Clamd implements ClamdInterface
     /**
      * {@inheritdoc}
      */
-    public function endSession()
+    public function endSession(): void
     {
         $this->client = null;
     }
@@ -260,7 +260,7 @@ class Clamd implements ClamdInterface
      *
      * @param Client $client
      */
-    public function setClient(Client $client)
+    public function setClient(Client $client): void
     {
         $this->client = $client;
     }
@@ -270,7 +270,7 @@ class Clamd implements ClamdInterface
      *
      * @return Client
      */
-    public function client()
+    public function client(): Client
     {
         if ($this->client !== null) {
             return $this->client;
